@@ -1,12 +1,12 @@
 # Chineses-Sentiment Analysis-Pytorch
-# 中文情感分析的Pytorch实现
+## 中文情感分析的Pytorch实现
 
-## 本项目使用了word2vec的中文预训练向量
+**本项目使用了word2vec的中文预训练向量
 
-## 模型分别有BiLSTM-attention和普通的LSTM两种，自行选择
+**模型分别有BiLSTM-attention和普通的LSTM两种，自行选择
 
 ## 使用说明：
-1、在Config中配置相关参数
+1、在**Config**中配置相关参数
 
 2、然后运行**DataProcess.py**，生成相应的word2id，word2vec等文件
 
