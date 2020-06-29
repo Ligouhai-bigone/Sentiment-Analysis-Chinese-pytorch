@@ -13,4 +13,4 @@ Chineses-Sentiment Analysis-Pytorch
 
 4、运行eval.py，读取模型，并得到评价
 
-如果好用请给的Star，谢谢了
+##如果好用请给个Star，谢谢了
