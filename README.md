@@ -12,5 +12,3 @@ Chineses-Sentiment Analysis-Pytorch
 3、运行主函数main，得到训练好的模型，并保存模型
 
 4、运行eval.py，读取模型，并得到评价
-
-                    —————————————————by Li
