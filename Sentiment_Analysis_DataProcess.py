@@ -1,9 +1,29 @@
 from __future__ import unicode_literals, print_function, division
 from io import open
+import torch
 import re
 import  numpy as np
 import gensim
+from torch.utils.data import Dataset
 from Sentiment_Analysis_Config import Config
+
+class Data_set(Dataset):
+    def __init__(self, Data, Label):
+        self.Data = Data
+        if Label is not None:#考虑对测试集的使用
+            self.Label = Label
+    def __len__(self):
+        return len(self.Data)
+
+    def __getitem__(self, index):
+        if self.Label is not None:
+            data = torch.from_numpy(self.Data[index])
+            label = torch.from_numpy(self.Label[index])
+            return data, label
+        else:
+            data = torch.from_numpy(self.Data[index])
+            return data
+
 
 def stopwordslist():#创建停用词表
     stopwords = [line.strip() for line in open('./word2vec_data/stopwords.txt',encoding='UTF-8').readlines()]

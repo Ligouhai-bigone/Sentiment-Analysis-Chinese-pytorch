@@ -4,30 +4,15 @@ import torch
 import torch.nn as nn
 from torch import optim
 import torch.nn.functional as F
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader,Dataset
 import tqdm
-from Sentiment_Analysis_DataProcess import prepare_data,build_word2vec
+from Sentiment_Analysis_DataProcess import prepare_data,build_word2vec,Data_set
 from sklearn.metrics import confusion_matrix,f1_score,recall_score
 import os
-from Sentiment_Analysis_model import LSTMModel,LSTM_attention
+from Sentiment_model import LSTMModel,LSTM_attention
 from Sentiment_Analysis_Config import Config
-from Sentiment_Analysis_eval import val_accuary,test_accuary
-class Data_set(Dataset):
-    def __init__(self, Data, Label):
-        self.Data = Data
-        if Label is not None:#考虑对测试集的使用
-            self.Label = Label
-    def __len__(self):
-        return len(self.Data)
+from Sentiment_Analysis_eval import val_accuary
 
-    def __getitem__(self, index):
-        if self.Label is not None:
-            data = torch.from_numpy(self.Data[index])
-            label = torch.from_numpy(self.Label[index])
-            return data, label
-        else:
-            data = torch.from_numpy(self.Data[index])
-            return data
 
 
 def train(train_dataloader,model, device, epoches, lr):
@@ -74,8 +59,7 @@ def train(train_dataloader,model, device, epoches, lr):
                                                                         100 * correct / total, 100*F1 , 100* Recall)}
                 train_dataloader.set_postfix(log=postfix)
 
-            val_accuary(model,val_dataloader,device,criterion)
-            acc=val_accuary()
+            acc=val_accuary(model,val_dataloader,device,criterion)
             if acc>best_acc:
                 best_acc = acc
                 if os.path.exists(Config.model_state_dict_path) == False:

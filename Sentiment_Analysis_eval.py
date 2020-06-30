@@ -1,14 +1,13 @@
 from __future__ import unicode_literals, print_function, division
-from Sentiment_Analysis_main import Config,Data_set
 from io import open
 import torch
 import torch.nn.functional as F
-from torch.utils.data import Dataset, DataLoader
-from Sentiment_Analysis_DataProcess import prepare_data,build_word2vec,text_to_array_nolable
+from torch.utils.data import DataLoader
 from sklearn.metrics import confusion_matrix,f1_score,recall_score,precision_score
 import os
-from Sentiment_Analysis_model import LSTMModel,LSTM_attention
+from Sentiment_model import LSTMModel,LSTM_attention
 from Sentiment_Analysis_Config import Config
+from Sentiment_Analysis_DataProcess import prepare_data,build_word2vec,text_to_array_nolable,Data_set
 
 def val_accuary(model,val_dataloader,device,criterion):
     model = model.to(device)
@@ -34,6 +33,7 @@ def val_accuary(model,val_dataloader,device,criterion):
             #CM = confusion_matrix(target1.cpu(), predicted1.cpu())
         print('\nVal accuracy : {:.3f}%,val_loss:{:.3f}, F1_score：{:.3f}%, Recall：{:.3f}%'.format(100*correct1/total1,val_loss,100*F1,100*Recall))
         return 100*correct1/total1
+
 def test_accuary(model,test_dataloader,device):
     model = model.to(device)
     with torch.no_grad():
@@ -94,19 +94,18 @@ if __name__ == '__main__':
     w2vec = torch.from_numpy(w2vec)
     w2vec = w2vec.float()  # CUDA接受float32，不接受float64
 
-    model=LSTMModel(Config.vocab_size,Config.embedding_dim,w2vec,Config.update_w2v,
+    model=LSTM_attention(Config.vocab_size,Config.embedding_dim,w2vec,Config.update_w2v,
                         Config.hidden_dim,Config.num_layers,Config.drop_keep_prob,Config.n_class,Config.bidirectional)
     # 读取模型
     #model1 = torch.load(Config.model_state_dict_path)
-    model1 = torch.load('./word2vec_data/sen_model_best.pkl')
+    model = torch.load('./word2vec_data/sen_model_best.pkl')
 
 
 
     #model.load_state_dict(torch.load(Config.model_state_dict_path)) #仅保存参数
     #验证
-    model1.eval()
     #val_accuary(model1, val_dataloader, device)
     #测试
-    test_accuary(model1,test_dataloader,device)
+    test_accuary(model,test_dataloader,device)
     #预测
-    pre(word2id,model1,Config.max_sen_len,Config.pre_path)
+    pre(word2id,model,Config.max_sen_len,Config.pre_path)
